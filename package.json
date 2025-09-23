@@ -1,0 +1,41 @@
+{
+  "name": "biome-suppressed",
+  "version": "1.0.0",
+  "description": "Drop-in replacement for biome check that maintains error baseline and only fails on new errors",
+  "main": "index.js",
+  "bin": {
+    "biome-suppressed": "./index.js",
+    "bs": "./index.js"
+  },
+  "scripts": {
+    "test": "node index.js status"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/biome-suppressed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/biome-suppressed/issues"
+  },
+  "homepage": "https://github.com/yourusername/biome-suppressed#readme",
+  "keywords": [
+    "biome",
+    "lint",
+    "linter",
+    "ultracite",
+    "baseline",
+    "ratcheting",
+    "code-quality",
+    "error-suppression",
+    "ci-cd",
+    "legacy-codebase"
+  ],
+  "author": "BEN Labs",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "peerDependencies": {
+    "@biomejs/biome": ">=1.0.0"
+  }
+}
