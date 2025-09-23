@@ -10,12 +10,12 @@ Built because https://eslint.org/docs/latest/use/suppressions looked awesome. ðŸ
 
 ## Installation
 
-### NPM Package (Recommended)
+### NPM Package (Coming Soon)
 ```bash
-# Install globally
+# Install globally (coming soon)
 npm install -g biome-suppressed
 
-# Or install as dev dependency
+# Or install as dev dependency (coming soon)
 npm install --save-dev biome-suppressed
 ```
 
