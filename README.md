@@ -30,7 +30,7 @@ npm link
 ## Key Features
 
 - **Drop-in wrapper**: Use `bs check` instead of `biome check`
-- **Auto-fix by default**: Runs with `--write` flag by default (use `--no-write` to disable)
+- **True drop-in replacement**: Check-only by default (use `--write` to apply fixes)
 - **Auto-improvement**: Updates baseline automatically when errors decrease
 - **Performance**: <50ms overhead on top of biome execution
 - **Fail on regression**: Exit 1 only when new errors are introduced
@@ -48,12 +48,12 @@ bs init
 
 ### Normal Development
 ```bash
-# Check for new errors with auto-fix (default behavior)
+# Check for new errors (default behavior, like biome check)
 bs check
 # Output: ✅ No new errors (18649 existing errors suppressed)
 
-# Check only mode (no fixes applied)
-bs check --no-write
+# Check and apply fixes (like biome check --write)
+bs check --write
 # Output: ✅ No new errors (18649 existing errors suppressed)
 ```
 
@@ -84,14 +84,14 @@ bs check
 
 ## Commands
 
-- `check [options] [files...]` - Check for new errors with auto-fix (default: .)
+- `check [options] [files...]` - Check for new errors (default: .)
 - `init [files...]` - Create initial baseline (default: .)
 - `update [files...]` - Update baseline with current errors (default: .)
 - `clear` - Remove baseline file
 - `status` - Show baseline information
 
 ### Options for check:
-- `--no-write` - Don't apply fixes (check only mode)
+- `--write` - Apply fixes (like biome check --write)
 - `--skip-suppression-update` - Don't update baseline on improvement
 - `--suppression-fail-on-improvement` - Fail if fewer errors than baseline (CI mode)
 
@@ -102,7 +102,7 @@ bs check
 {
   "scripts": {
     "lint": "bs check",
-    "lint:check": "bs check --no-write",
+    "lint:fix": "bs check --write",
     "lint:ci": "bs check --suppression-fail-on-improvement",
     "lint:init": "bs init",
     "lint:update": "bs update",

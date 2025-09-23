@@ -102,19 +102,40 @@ function groupBy(array, key) {
   }, {});
 }
 
+// Sanitize and validate file paths
+function sanitizeFilePaths(files) {
+  return files
+    .map(file => {
+      // Quote paths with spaces
+      if (file.includes(" ") && !file.startsWith('"')) {
+        return `"${file}"`;
+      }
+      return file;
+    })
+    .filter(file => {
+      // Remove quotes for existence check
+      const cleanFile = file.replace(/^"|"$/g, "");
+      if (cleanFile === "." || fs.existsSync(cleanFile)) {
+        return true;
+      }
+      console.warn(`⚠️  File/directory not found: ${cleanFile}`);
+      return false;
+    });
+}
+
 // Parse command line arguments
 function parseArgs(args) {
   const options = {
     files: [],
-    write: true, // Default to write mode
+    write: false, // Default to check-only mode (like biome check)
     skipSuppressionUpdate: false,
     suppressionFailOnImprovement: false,
   };
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === "--no-write") {
-      options.write = false;
+    if (arg === "--write") {
+      options.write = true;
     } else if (arg === "--skip-suppression-update") {
       options.skipSuppressionUpdate = true;
     } else if (arg === "--suppression-fail-on-improvement") {
@@ -127,6 +148,14 @@ function parseArgs(args) {
   // Default to current directory if no files specified
   if (options.files.length === 0) {
     options.files = ["."];
+  }
+
+  // Sanitize file paths
+  options.files = sanitizeFilePaths(options.files);
+
+  if (options.files.length === 0) {
+    console.error("❌ No valid files or directories found");
+    process.exit(1);
   }
 
   return options;
@@ -156,7 +185,7 @@ function displayNewErrors(newErrors) {
   const files = [...new Set(newErrors.map((e) => e.file))];
   console.error("Fix strategies:");
   console.error(`• Run: npx biome check --write ${files.join(" ")}`);
-  console.error("• Or accept: node tools/biome-suppressed update");
+  console.error("• Or accept: bs update");
 }
 
 // Main check command logic
@@ -172,7 +201,7 @@ function checkCommand(args) {
   const currentErrors = parseGitHubErrors(result.stdout);
 
   console.log(
-    `Found ${currentErrors.length} error${currentErrors.length === 1 ? "" : "s"}${write ? " after fixes applied" : ""}`
+    `Found ${currentErrors.length} error${currentErrors.length === 1 ? "" : "s"}${write ? " (after fixes applied)" : ""}`
   );
 
   // Load baseline
@@ -214,7 +243,7 @@ function checkCommand(args) {
         "❌ Unexpected improvement detected in CI mode (--suppression-fail-on-improvement)"
       );
       console.error(
-        "   Update the baseline with: node tools/biome-suppressed update"
+        "   Update the baseline with: bs update"
       );
       return 1; // Failure - baseline needs updating
     }
@@ -308,7 +337,7 @@ function main() {
 
     default:
       console.log(`
-Usage: node tools/biome-suppressed <command> [options] [files...]
+Usage: bs <command> [options] [files...]
 
 Commands:
   check [options] [files...]   Check for new errors (default: .)
@@ -318,16 +347,16 @@ Commands:
   status                       Show baseline information
 
 Options for check:
-  --no-write                     Don't apply fixes (check only mode)
+  --write                        Apply fixes (like biome check --write)
   --skip-suppression-update      Don't update baseline on improvement
   --suppression-fail-on-improvement  Fail if fewer errors than baseline (CI mode)
 
 Examples:
-  node tools/biome-suppressed check                # Run with --write (default)
-  node tools/biome-suppressed check --no-write     # Check only, don't fix
-  node tools/biome-suppressed check --skip-suppression-update src/
-  node tools/biome-suppressed init
-  node tools/biome-suppressed update
+  bs check                       # Check only (default, like biome check)
+  bs check --write               # Check and fix (like biome check --write)
+  bs check --skip-suppression-update src/
+  bs init
+  bs update
       `);
       process.exit(1);
   }
