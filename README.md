@@ -1,8 +1,12 @@
 # Biome Suppressed
 
-A fast, lightweight drop-in replacement for `biome check` that maintains an error baseline and only fails on new errors. Automatically improves the baseline when fewer errors are found.
+A fast, lightweight drop-in wrapper for `biome check` (https://biomejs.dev/) that maintains an error baseline and only fails on new errors. Automatically improves the baseline when fewer errors are found.
 
 Available as both `biome-suppressed` and `bs` commands for convenience.
+
+Built because https://eslint.org/docs/latest/use/suppressions looked awesome. 🚀
+
+(Written mostly by Claude Code - so use at your own risk)
 
 ## Installation
 
@@ -18,14 +22,14 @@ npm install --save-dev biome-suppressed
 ### From Source
 ```bash
 # Clone and link
-git clone https://github.com/yourusername/biome-suppressed.git
+git clone https://github.com/a-c-m/biome-suppressed.git
 cd biome-suppressed
 npm link
 ```
 
 ## Key Features
 
-- **Drop-in replacement**: Use `bs check` instead of `biome check`
+- **Drop-in wrapper**: Use `bs check` instead of `biome check`
 - **Auto-fix by default**: Runs with `--write` flag by default (use `--no-write` to disable)
 - **Auto-improvement**: Updates baseline automatically when errors decrease
 - **Performance**: <50ms overhead on top of biome execution
@@ -143,8 +147,8 @@ bs check
 ## File Structure
 
 ```
-biome-suppressed/
-├── index.js                 # ~280 lines, zero dependencies
+.
+├── index.js                 # Zero dependencies, under 500 lines
 ├── package.json             # CLI metadata with bin commands
 └── README.md                # This documentation
 ```
