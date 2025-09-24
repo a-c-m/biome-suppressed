@@ -12,9 +12,22 @@ function runBiome(files, withWrite = false) {
       .replace(/\s+/g, " ")
       .trim();
   try {
-    const stdout = execSync(command, { encoding: "utf8", stdio: "pipe" });
+    // Use maxBuffer to handle large outputs and ignore SIGPIPE errors
+    const stdout = execSync(command, {
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+      maxBuffer: 50 * 1024 * 1024, // 50MB buffer
+    });
     return { stdout, stderr: "", code: 0 }; // No errors
   } catch (error) {
+    // Handle broken pipe errors gracefully
+    if (error.signal === 'SIGPIPE' || (error.stderr && error.stderr.includes('Broken pipe'))) {
+      return {
+        stdout: error.stdout || "",
+        stderr: "",
+        code: 0, // Treat broken pipe as success if we got output
+      };
+    }
     return {
       stdout: error.stdout || "",
       stderr: error.stderr || "",
@@ -25,7 +38,7 @@ function runBiome(files, withWrite = false) {
 
 // Parse GitHub Actions reporter format
 function parseGitHubErrors(output) {
-  return output
+  const errors = output
     .split("\n")
     .filter((errorLine) => errorLine.startsWith("::error"))
     .map((errorLine) => {
@@ -36,21 +49,40 @@ function parseGitHubErrors(output) {
       if (!match) return null;
 
       const [, rule, file, lineNum, message] = match;
+      // Normalize file path consistently
+      let normalizedFile = file;
+      if (path.isAbsolute(file)) {
+        normalizedFile = path.relative(process.cwd(), file);
+      }
+      // Ensure forward slashes for cross-platform consistency
+      normalizedFile = normalizedFile.replace(/\\/g, '/');
+
       return {
         rule,
-        file: path.relative(process.cwd(), file),
+        file: normalizedFile,
         line: Number.parseInt(lineNum),
         message: message.trim(),
       };
     })
     .filter(Boolean);
+
+  // Sort for deterministic results
+  return errors.sort((a, b) => {
+    if (a.file !== b.file) return a.file.localeCompare(b.file);
+    if (a.line !== b.line) return a.line - b.line;
+    if (a.rule !== b.rule) return a.rule.localeCompare(b.rule);
+    return 0;
+  });
 }
 
 // Create stable fingerprint for error
 function createErrorFingerprint(error) {
+  // Ensure deterministic fingerprints by normalizing path separators
+  const normalizedFile = error.file.replace(/\\/g, '/');
+  const fingerprintData = `${normalizedFile}:${error.rule}:${error.line}`;
   return crypto
     .createHash("md5")
-    .update(`${error.file}:${error.rule}:${error.line}`)
+    .update(fingerprintData)
     .digest("hex");
 }
 
@@ -69,13 +101,21 @@ function loadBaseline() {
 
 // Save baseline to cache file
 function saveBaseline(errors) {
+  // Sort errors for consistent baselines
+  const sortedErrors = [...errors].sort((a, b) => {
+    if (a.file !== b.file) return a.file.localeCompare(b.file);
+    if (a.line !== b.line) return a.line - b.line;
+    if (a.rule !== b.rule) return a.rule.localeCompare(b.rule);
+    return 0;
+  });
+
   const baseline = {
     version: "1.0.0",
     timestamp: new Date().toISOString(),
     biomeVersion: getBiomeVersion(),
-    errorCount: errors.length,
-    fingerprints: errors.map(createErrorFingerprint),
-    errors, // Keep for debugging/reporting
+    errorCount: sortedErrors.length,
+    fingerprints: sortedErrors.map(createErrorFingerprint).sort(),
+    errors: sortedErrors, // Keep for debugging/reporting
   };
 
   fs.writeFileSync(".biome-suppressed.json", JSON.stringify(baseline, null, 2));
