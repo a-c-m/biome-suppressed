@@ -111,9 +111,7 @@ function saveBaseline(errors) {
 
   const baseline = {
     version: "1.0.0",
-    timestamp: new Date().toISOString(),
     biomeVersion: getBiomeVersion(),
-    errorCount: sortedErrors.length,
     fingerprints: sortedErrors.map(createErrorFingerprint).sort(),
     errors: sortedErrors, // Keep for debugging/reporting
   };
@@ -273,9 +271,9 @@ function checkCommand(args) {
   ).length;
 
   // Auto-improvement: update baseline if fewer errors (unless skipped)
-  if (currentErrors.length < baseline.errorCount) {
+  if (currentErrors.length < baseline.fingerprints.length) {
     console.log(
-      `🎉 Improvement detected! ${baseline.errorCount} → ${currentErrors.length} error${currentErrors.length === 1 ? "" : "s"} (-${baseline.errorCount - currentErrors.length})`
+      `🎉 Improvement detected! ${baseline.fingerprints.length} → ${currentErrors.length} error${currentErrors.length === 1 ? "" : "s"} (-${baseline.fingerprints.length - currentErrors.length})`
     );
 
     if (suppressionFailOnImprovement) {
@@ -314,7 +312,7 @@ function checkCommand(args) {
   // New errors found: failure
   displayNewErrors(newErrors);
   console.error(
-    `Baseline: ${baseline.errorCount} error${baseline.errorCount === 1 ? "" : "s"}, Current: ${currentErrors.length} error${currentErrors.length === 1 ? "" : "s"}`
+    `Baseline: ${baseline.fingerprints.length} error${baseline.fingerprints.length === 1 ? "" : "s"}, Current: ${currentErrors.length} error${currentErrors.length === 1 ? "" : "s"}`
   );
 
   return 1; // Failure
@@ -365,10 +363,14 @@ function main() {
       const baseline = loadBaseline();
       if (baseline) {
         console.log(
-          `📊 Baseline: ${baseline.errorCount} error${baseline.errorCount === 1 ? "" : "s"}`
+          `📊 Baseline: ${baseline.fingerprints.length} error${baseline.fingerprints.length === 1 ? "" : "s"}`
         );
-        console.log(`📅 Created: ${baseline.timestamp}`);
         console.log(`🔧 Biome version: ${baseline.biomeVersion}`);
+        // Show file timestamp instead
+        try {
+          const stats = fs.statSync(".biome-suppressed.json");
+          console.log(`📅 Last updated: ${stats.mtime.toISOString()}`);
+        } catch {}
       } else {
         console.log("ℹ️  No baseline found");
       }

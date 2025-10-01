@@ -1,6 +1,6 @@
 {
   "name": "biome-suppressed",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Drop-in replacement for biome check that maintains error baseline and only fails on new errors",
   "main": "index.js",
   "bin": {
