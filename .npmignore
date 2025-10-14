@@ -1,0 +1,30 @@
+# Development files
+.claude/
+.git/
+.gitignore
+
+# Baseline file (should not be published)
+.biome-suppressed.json
+
+# macOS
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Test files
+test/
+tests/
+test.js
+*.test.js
+*.spec.js
+
+# Biome config (not needed in published package)
+biome.json
+
+# CI/CD
+.github/

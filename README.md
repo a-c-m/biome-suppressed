@@ -10,12 +10,11 @@ Built because https://eslint.org/docs/latest/use/suppressions looked awesome. ðŸ
 
 ## Installation
 
-### NPM Package (Coming Soon)
 ```bash
-# Install globally (coming soon)
+# Install globally
 npm install -g biome-suppressed
 
-# Or install as dev dependency (coming soon)
+# Or install as dev dependency (recommended)
 npm install --save-dev biome-suppressed
 ```
 
@@ -128,7 +127,7 @@ bs check
 
 ## Benefits
 
-1. **Legacy Codebase Friendly**: Adopt Ultracite without fixing thousands of existing errors first
+1. **Legacy Codebase Friendly**: Adopt Biome without fixing thousands of existing errors first
 2. **Always Improving**: Automatic baseline updates reward code quality improvements
 3. **Fast & Lightweight**: <50ms overhead, single file implementation
 4. **CI/CD Ready**: Proper exit codes, clear error reporting
@@ -161,4 +160,4 @@ bs check
 - **Auto-improvement**: Ratcheting system that always moves toward better code quality
 - **Error grouping**: Token-efficient display grouped by rule type
 
-This tool enables adopting Ultracite on legacy codebases while maintaining development velocity and encouraging continuous improvement.
+This tool enables adopting Biome on legacy codebases while maintaining development velocity and encouraging continuous improvement.
