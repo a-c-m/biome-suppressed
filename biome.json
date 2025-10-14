@@ -1,19 +1,29 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-	"files": {
-		"ignore": [".biome-suppressed.json"]
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": false,
-			"style": {
-				"noUnusedTemplateLiteral": "error"
-			}
-		}
-	},
-	"formatter": {
-		"enabled": true,
-		"indentStyle": "tab"
-	}
+  "extends": ["ultracite"],
+  "linter": {
+    "rules": {
+      "style": {
+        "noMagicNumbers": "off",
+        "useBlockStatements": "off",
+        "noUnusedTemplateLiteral": "error",
+        "useForOf": "off"
+      },
+      "suspicious": {
+        "noConsole": "off",
+        "noFallthroughSwitchClause": "off",
+        "noEmptyBlockStatements": "off"
+      },
+      "performance": {
+        "useTopLevelRegex": "off"
+      },
+      "correctness": {
+        "useParseIntRadix": "off"
+      },
+      "complexity": {
+        "noForEach": "off",
+        "noExcessiveCognitiveComplexity": "off",
+        "useOptionalChain": "off"
+      }
+    }
+  }
 }
