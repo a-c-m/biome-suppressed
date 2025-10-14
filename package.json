@@ -4,17 +4,22 @@
 	"description": "Drop-in replacement for biome check that maintains error baseline and only fails on new errors",
 	"main": "index.js",
 	"bin": {
-		"biome-suppressed": "./index.js",
-		"bs": "./index.js"
+		"biome-suppressed": "index.js",
+		"bs": "index.js"
 	},
-	"files": ["index.js", "README.md", "LICENSE", "CHANGELOG.md"],
+	"files": [
+		"index.js",
+		"README.md",
+		"LICENSE",
+		"CHANGELOG.md"
+	],
 	"scripts": {
 		"test": "node test.js",
 		"prepublishOnly": "npm test"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/a-c-m/biome-suppressed.git"
+		"url": "git+https://github.com/a-c-m/biome-suppressed.git"
 	},
 	"bugs": {
 		"url": "https://github.com/a-c-m/biome-suppressed/issues"
