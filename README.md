@@ -1,5 +1,8 @@
 # Biome Suppressed
 
+[![npm version](https://img.shields.io/npm/v/biome-suppressed.svg)](https://www.npmjs.com/package/biome-suppressed)
+[![npm downloads](https://img.shields.io/npm/dm/biome-suppressed.svg)](https://www.npmjs.com/package/biome-suppressed)
+
 A fast, lightweight drop-in wrapper for `biome check` (https://biomejs.dev/) that maintains an error baseline and only fails on new errors. Automatically improves the baseline when fewer errors are found.
 
 Available as both `biome-suppressed` and `bs` commands for convenience.
@@ -11,14 +14,14 @@ Built because https://eslint.org/docs/latest/use/suppressions looked awesome. ðŸ
 ## Installation
 
 ```bash
-# Install globally
-npm install -g biome-suppressed
-
-# Or install as dev dependency (recommended)
+# Install as dev dependency (recommended)
 npm install --save-dev biome-suppressed
+
+# Or install globally
+npm install -g biome-suppressed
 ```
 
-### From Source
+### From Source (Optional)
 ```bash
 # Clone and link
 git clone https://github.com/a-c-m/biome-suppressed.git
