@@ -74,6 +74,7 @@ function parseGitHubErrors(output) {
     if (a.file !== b.file) return a.file.localeCompare(b.file);
     if (a.line !== b.line) return a.line - b.line;
     if (a.rule !== b.rule) return a.rule.localeCompare(b.rule);
+    if (a.message !== b.message) return a.message.localeCompare(b.message);
     return 0;
   });
 }
@@ -106,6 +107,7 @@ function saveBaseline(errors) {
     if (a.file !== b.file) return a.file.localeCompare(b.file);
     if (a.line !== b.line) return a.line - b.line;
     if (a.rule !== b.rule) return a.rule.localeCompare(b.rule);
+    if (a.message !== b.message) return a.message.localeCompare(b.message);
     return 0;
   });
 
