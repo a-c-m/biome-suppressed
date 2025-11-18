@@ -91,11 +91,16 @@ bs check
 - `update [files...]` - Update baseline with current errors (default: .)
 - `clear` - Remove baseline file
 - `status` - Show baseline information
+- `chart [output-file]` - Generate interactive HTML chart from git history (requires git and jq)
 
 ### Options for check:
 - `--write` - Apply fixes (like biome check --write)
 - `--skip-suppression-update` - Don't update baseline on improvement
 - `--suppression-fail-on-improvement` - Fail if fewer errors than baseline (CI mode)
+
+### Note on `update` Command
+
+The `update` command is intentionally **de-emphasized in error messages** to discourage lazy fixes. While it's available for legitimate use cases (bulk refactoring, dependency upgrades, etc.), the tool's error output promotes fixing errors properly with `--write` instead of just accepting them into the baseline. This is by design to prevent AI assistants and developers from taking the easy path of suppressing errors rather than fixing them.
 
 ## Integration
 
@@ -110,6 +115,7 @@ bs check
     "lint:update": "bs update",
     "lint:status": "bs status",
     "lint:clear": "bs clear",
+    "lint:chart": "bs chart",
     "lint:strict": "biome check --write ."
   }
 }
@@ -155,6 +161,24 @@ bs check
 └── README.md                # This documentation
 ```
 
+## Visualization
+
+Track your progress with the `chart` command! Generate an interactive HTML dashboard showing:
+
+- **Historical trend charts** for last 4 weeks and all time
+- **Leaderboards** showing who's fixing vs adding suppressions
+- **Summary statistics** including peak count and total reduction percentage
+
+```bash
+# Generate chart (requires git and jq)
+bs chart
+
+# Or specify custom output file
+bs chart docs/suppression-progress.html
+```
+
+The generated HTML file is self-contained and can be shared with your team or archived for historical tracking.
+
 ## Architecture
 
 - **Single file**: Zero dependencies except biome itself
@@ -162,5 +186,6 @@ bs check
 - **MD5 fingerprinting**: Fast error identification and comparison
 - **Auto-improvement**: Ratcheting system that always moves toward better code quality
 - **Error grouping**: Token-efficient display grouped by rule type
+- **Progress tracking**: Git-based chart generation for visualizing improvements
 
 This tool enables adopting Biome on legacy codebases while maintaining development velocity and encouraging continuous improvement.

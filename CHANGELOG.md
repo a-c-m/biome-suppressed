@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2024-11-18
+
+### Added
+- **Chart command**: New `bs chart` command to generate interactive HTML visualization
+  - Generates self-contained HTML dashboard showing suppression trends over time
+  - Displays historical charts for last 4 weeks and all time
+  - Includes leaderboards showing top contributors (both adding and removing suppressions)
+  - Shows summary statistics: current count, peak count, total reduction percentage
+  - Enhanced tooltips showing author and change (+/-) for each data point
+  - Requires `git` and `jq` to be installed
+  - Usage: `bs chart [output-file]` (defaults to `biome-suppressions-chart.html`)
+- **Progress visualization**: Track team progress in reducing technical debt
+- **Updated documentation**: Added visualization section to README with examples
+
+### Changed
+- **De-emphasized `update` command**: Error messages now promote fixing errors with `--write` instead of accepting them with `update`
+  - Removed "Or accept: bs update" suggestion from new error output
+  - Changed CI improvement message to emphasize fixing errors first
+  - Added README note explaining this is intentional to prevent lazy error suppression
+  - The `update` command is still available for legitimate use cases
+
 ## [1.2.1] - 2024-10-21
 
 ### Fixed
